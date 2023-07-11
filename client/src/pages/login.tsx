@@ -3,8 +3,14 @@ import coffeeThumb from "../assets/images/coffee-thumb.jpg";
 import logoTitle from "../assets/images/logo_title.png";
 import SwitchToggle from "@/components/switch";
 import iconGoogle from "@icons/google.svg";
+import StyledInputForm from "@/components/input_form";
+
 function Login() {
   const [isChecked, setIsChecked] = useState(false);
+  const [loginData, setLoginData] = useState({
+    login: "",
+    password: "",
+  });
 
   useEffect(() => {
     document.title = "Login Page";
@@ -12,6 +18,18 @@ function Login() {
 
   const handleToggleChange = useCallback((newChecked: boolean) => {
     setIsChecked(newChecked);
+  }, []);
+
+  const handleSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      console.log("Form submitted:", loginData);
+    },
+    [loginData]
+  );
+
+  const handleInputChange = useCallback((name: string, value: string) => {
+    setLoginData((prevData) => ({ ...prevData, [name]: value }));
   }, []);
 
   return (
@@ -34,31 +52,32 @@ function Login() {
               <h1 className="font-bold text-[28px] font-lobster">
                 Nice to see you again
               </h1>
-              <form className="card_form_field">
+              <form className="card_form_field" onSubmit={handleSubmit}>
                 <div className="flex flex-col">
                   <label htmlFor="loginBorder" className="card_label_form">
                     Login
                   </label>
-                  <label id="loginBorder" className="card_input_border">
-                    <input
-                      name="login"
-                      className="card_input_field"
-                      placeholder="Email or phone number"
-                    />
-                  </label>
+                  <StyledInputForm
+                    id="loginInput"
+                    name="login"
+                    type="text"
+                    placeholder="Email or phone number"
+                    onValueChange={(value) => handleInputChange("login", value)}
+                  />
                 </div>
                 <div className="flex flex-col mt-[1.5rem]">
                   <label htmlFor="passwordBorder" className="card_label_form">
                     Password
                   </label>
-                  <label id="passwordBorder" className="card_input_border">
-                    <input
-                      name="password"
-                      type="password"
-                      className="card_input_field"
-                      placeholder="Enter password"
-                    />
-                  </label>
+                  <StyledInputForm
+                    id="passwordInput"
+                    name="login"
+                    type="password"
+                    placeholder="Enter password"
+                    onValueChange={(value) =>
+                      handleInputChange("password", value)
+                    }
+                  />
                 </div>
                 <div className="flex items-center mt-4 mb-7">
                   <SwitchToggle
