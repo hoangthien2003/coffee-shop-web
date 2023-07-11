@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 function Home() {
   useEffect(() => {
     document.title = "Home";
+    window.location.href = "/signup";
   });
 
   return (

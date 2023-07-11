@@ -22,7 +22,7 @@
     flex shadow-2xl;
   }
   .card_form_layout {
-    @apply w-[30rem] py-[2.5rem] px-[3.5rem];
+    @apply w-[30rem] py-[2rem] px-[3.5rem];
   }
   .card_form_field {
     @apply flex flex-col mt-[1rem] w-full;

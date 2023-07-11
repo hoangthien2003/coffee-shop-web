@@ -4,16 +4,20 @@ import "./index.css";
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import Home from "./pages/home";
 import Login from "./pages/login";
-
-function AuthFilter() {
-  const token = localStorage.getItem("token");
-  return token == null ? <Login /> : <Outlet />;
-}
+import Signup from "./pages/signup";
 
 const router = createBrowserRouter([
   {
-    path: "*",
-    element: <AuthFilter />,
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
   },
 ]);
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

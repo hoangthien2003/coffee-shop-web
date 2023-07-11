@@ -11,10 +11,11 @@ function Login() {
     login: "",
     password: "",
   });
+  const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
     document.title = "Login Page";
-  }, [document.title]);
+  });
 
   const handleToggleChange = useCallback((newChecked: boolean) => {
     setIsChecked(newChecked);
@@ -61,7 +62,7 @@ function Login() {
                     id="loginInput"
                     name="login"
                     type="text"
-                    placeholder="Email or phone number"
+                    placeholder="Enter email"
                     onValueChange={(value) => handleInputChange("login", value)}
                   />
                 </div>
@@ -111,7 +112,7 @@ function Login() {
                 <a
                   className="text-blue-400 ml-2
 								hover:underline"
-                  href="#"
+                  href="/signup"
                 >
                   Sign up now
                 </a>
