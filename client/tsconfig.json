@@ -19,11 +19,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./*"],
       "@icons/*": ["assets/icons/"],
-      "@images/*": ["assets/images/"]
+      "@images/*": ["assets/images/"],
+      "@utils/*": ["utils/"]
     }
   },
   "include": ["src"],
