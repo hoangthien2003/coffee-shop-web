@@ -46,7 +46,7 @@ const StyledInputForm = ({
   }, []);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-[4rem]">
       <label
         id={id}
         className={`card_input_border ${
