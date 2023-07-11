@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface InputProps {
   id: string;
@@ -7,6 +7,7 @@ interface InputProps {
   placeholder: string;
   validate?: boolean;
   onValueChange: (value: string) => void;
+  error?: string | null;
 }
 
 const StyledInputForm = ({
@@ -14,34 +15,35 @@ const StyledInputForm = ({
   name,
   type,
   placeholder,
-  validate = false,
   onValueChange,
+  error,
 }: InputProps) => {
   const [value, setValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [isValid, setIsValid] = useState(true);
 
+  useEffect(() => {
+    if (error) {
+      setIsValid(false);
+    } else setIsValid(true);
+  }, [error]);
+
   const handleInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setValue(event.target.value);
-      if (validate) {
-        setIsValid(true);
-      }
       onValueChange(event.target.value);
     },
-    [onValueChange, validate]
+    [onValueChange, error]
   );
 
   const handleFocus = useCallback(() => {
     setIsFocused(true);
+    setIsValid(true);
   }, []);
 
   const handleBlur = useCallback(() => {
     setIsFocused(false);
-    if (validate && value.trim() === "") {
-      setIsValid(false);
-    }
-  }, [validate, value]);
+  }, []);
 
   return (
     <div className="flex flex-col">
@@ -64,9 +66,17 @@ const StyledInputForm = ({
           onChange={handleInputChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          required
         />
       </label>
-      {!isValid && <span className="text-red-500">Invalid {name}!</span>}
+      {error && !isValid && (
+        <span
+          className="text-red-500
+      text-[13px]"
+        >
+          {error}
+        </span>
+      )}
     </div>
   );
 };
