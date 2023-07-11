@@ -1,78 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Lobster&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
- 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
- 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
- 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
- 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
- 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
- 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
- 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
- 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
- 
-    --ring: 215 20.2% 65.1%;
- 
-    --radius: 0.5rem;
-  }
- 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
- 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
- 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
- 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
- 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
- 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
- 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
- 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
- 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 85.7% 97.3%;
- 
-    --ring: 217.2 32.6% 17.5%;
-  }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Open Sans", sans-serif;
 }
- 
-@layer base {
-  * {
-    @apply border-border;
+
+@layer components {
+  .card_foreground {
+    @apply bg-card flex justify-center items-center
+    w-screen h-screen;
   }
-  body {
-    @apply bg-background text-foreground;
+  .card_layout {
+    @apply bg-white rounded-[16px]
+    flex shadow-2xl;
+  }
+  .card_form_layout {
+    @apply w-[30rem] py-[2.5rem] px-[3.5rem];
+  }
+  .card_form_field {
+    @apply flex flex-col mt-[1rem] w-full;
+  }
+  .card_label_form {
+    @apply ml-[10px] text-[13px];
+  }
+  .card_input_field {
+    @apply outline-none w-full bg-transparent;
+  }
+  .card_input_border {
+    @apply border-gray-200 rounded-[0.3rem]
+    border-solid border-[1px] px-[1rem] py-[0.8rem]
+    bg-gray-100 cursor-text;
+  }
+  .btn {
+    @apply flex justify-center items-center 
+    border-none rounded-[6px] transition-colors;
+  }
+  .btn_submit {
+    @apply w-full py-[0.6rem];
+  }
+  .card_footer_form {
+    @apply flex items-center w-full justify-center
+    text-[14px];
   }
 }
