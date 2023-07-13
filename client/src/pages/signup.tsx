@@ -1,8 +1,13 @@
 import React, { useState, useCallback, useEffect } from "react";
 import coffeeThumbSignup from "@images/coffee-thumb-signup.jpg";
 import StyledInputForm from "@/components/input_form";
-import logoTitle from "../assets/images/logo_title.png";
-import { EMAIL_REGEX, PASSWORD_REGEX } from "@/utils/constants";
+import logoTitle from "@images/logo.png";
+import { EMAIL_REGEX, PASSWORD_REGEX, SERVER_URL } from "@/utils/constants";
+import axios from "axios";
+import "react-toastify/dist/ReactToastify.css";
+import Toast from "@/components/toast";
+import Skeleton from "react-loading-skeleton";
+import { clearTimeout } from "timers";
 
 function Signup() {
   const [signupData, setSignupData] = useState({
@@ -12,6 +17,8 @@ function Signup() {
     confirm: "",
   });
   const [errors, setErrors] = useState<string[]>([]);
+  const [signupStatus, setSignupStatus] = useState("");
+  const [signupMessage, setSignupMessage] = useState("");
 
   useEffect(() => {
     document.title = "Signup Page";
@@ -22,24 +29,58 @@ function Signup() {
   }, []);
 
   const handleSubmit = useCallback(
-    (event: React.ChangeEvent<HTMLFormElement>) => {
+    async (event: React.ChangeEvent<HTMLFormElement>) => {
       event.preventDefault();
       const newErrors: string[] = [];
       if (!EMAIL_REGEX.test(signupData.email)) {
-        newErrors.push("Email không hợp lệ");
+        newErrors.push("Invalid Email!");
       }
       if (signupData.name.length < 2) {
-        newErrors.push("Tên phải có ít nhất 2 kí tự");
+        newErrors.push("Name must be at least 2 characters");
       }
       if (!PASSWORD_REGEX.test(signupData.password)) {
-        newErrors.push("Mật khẩu không hợp lệ");
+        newErrors.push("Invalid Password!");
       }
       if (signupData.password !== signupData.confirm) {
-        newErrors.push("Mật khẩu không khớp");
+        newErrors.push("Password incorrect!");
       }
       setErrors(newErrors);
       if (newErrors.length === 0) {
-        console.log("Form singup submitted: ", signupData);
+        const reqData = {
+          email: signupData.email,
+          name: signupData.name,
+          roleID: "US",
+          password: signupData.password,
+        };
+        await axios
+          .post(SERVER_URL + "/signup", reqData)
+          .then((res) => {
+            console.log(res.data);
+            if (res.data.code === "ERR_NETWORK") {
+              setSignupStatus("failure");
+              setSignupMessage("NETWORK_ERROR");
+              return;
+            }
+            setSignupStatus("success");
+            setSignupMessage(res.data);
+            const timer = setTimeout(() => {
+              window.location.href = "/login"; // Chuyển hướng đến path "/"
+            }, 3000);
+            clearTimeout(timer);
+          })
+          .catch((err) => {
+            console.log(err);
+            setSignupStatus("failure");
+            if (err.response) {
+              const { data } = err.response;
+              setSignupStatus("failure");
+              setSignupMessage(data);
+              newErrors[0] = data;
+              setErrors(newErrors);
+            } else {
+              console.log("An error occurred");
+            }
+          });
       } else {
         newErrors.forEach((error) => {
           console.log(error);
@@ -51,7 +92,7 @@ function Signup() {
 
   return (
     <>
-      <div className="card_foreground">
+      <div className="card_foreground relative">
         <div className="card_layout">
           <div className="card_form_layout w-[34rem]">
             <div className="flex items-center">
@@ -145,12 +186,23 @@ function Signup() {
               </div>
             </div>
           </div>
-          <img
-            src={coffeeThumbSignup}
-            width={470}
-            className="rounded-tr-[16px] rounded-br-[16px]"
-          />
+          <div>
+            {(
+              <img
+                src={coffeeThumbSignup}
+                width={470}
+                className="rounded-tr-[16px] rounded-br-[16px] h-full"
+              />
+            ) || <Skeleton width={450} className="1" count={1} />}
+          </div>
         </div>
+        {signupStatus ? (
+          signupStatus === "success" ? (
+            <Toast message={`${signupMessage}`} success={true} />
+          ) : (
+            <Toast message={`${signupMessage}`} success={false} />
+          )
+        ) : null}
       </div>
     </>
   );
