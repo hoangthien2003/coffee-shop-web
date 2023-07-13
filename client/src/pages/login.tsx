@@ -4,6 +4,10 @@ import logoTitle from "../assets/images/logo_title.png";
 import SwitchToggle from "@/components/switch";
 import iconGoogle from "@icons/google.svg";
 import StyledInputForm from "@/components/input_form";
+import { EMAIL_REGEX, PASSWORD_REGEX, SERVER_URL } from "@/utils/constants";
+import axios from "axios";
+import Toast from "@/components/toast";
+import Skeleton from "react-loading-skeleton";
 
 function Login() {
   const [isChecked, setIsChecked] = useState(false);
@@ -12,6 +16,8 @@ function Login() {
     password: "",
   });
   const [errors, setErrors] = useState<string[]>([]);
+  const [loginStatus, setLoginStatus] = useState("");
+  const [loginMessage, setLoginMessage] = useState("");
 
   useEffect(() => {
     document.title = "Login Page";
@@ -22,9 +28,52 @@ function Login() {
   }, []);
 
   const handleSubmit = useCallback(
-    (event: React.FormEvent<HTMLFormElement>) => {
+    async (event: React.ChangeEvent<HTMLFormElement>) => {
       event.preventDefault();
-      console.log("Form submitted:", loginData);
+      const newErrors: string[] = [];
+      if (!EMAIL_REGEX.test(loginData.login)) {
+        newErrors.push("Invalid Email!");
+      }
+      if (!PASSWORD_REGEX.test(loginData.password)) {
+        newErrors.push("Invalid Password!");
+      }
+      setErrors(newErrors);
+      if (newErrors.length === 0) {
+        const reqData = {
+          email: loginData.login,
+          password: loginData.password,
+        };
+        await axios
+          .post(SERVER_URL + "/login", reqData)
+          .then((res) => {
+            console.log(res.data);
+            setLoginStatus("success");
+            setLoginMessage(res.data);
+            const timer = setTimeout(() => {
+              window.location.href = "/"; // Chuyển hướng đến path "/"
+            }, 3000);
+            clearTimeout(timer);
+          })
+          .catch((err) => {
+            console.log(err);
+            setLoginStatus("failure");
+            if (err.response) {
+              const { data } = err.response;
+              setLoginStatus("failure");
+              setLoginMessage(data.message);
+            } else {
+              if (err.code === "ERR_NETWORK") {
+                setLoginStatus("failure");
+                setLoginMessage(`NETWORK_ERROR Cannot connect to Server`);
+                return;
+              }
+            }
+          });
+      } else {
+        newErrors.forEach((error) => {
+          console.log(error);
+        });
+      }
     },
     [loginData]
   );
@@ -35,13 +84,17 @@ function Login() {
 
   return (
     <>
-      <div className="card_foreground">
+      <div className="card_foreground relative">
         <div className="card_layout">
-          <img
-            src={coffeeThumb}
-            width={440}
-            className="rounded-tl-[16px] rounded-bl-[16px]"
-          />
+          <div>
+            {(
+              <img
+                src={coffeeThumb}
+                width={440}
+                className="rounded-tl-[16px] rounded-bl-[16px] h-full"
+              />
+            ) || <Skeleton width={440} count={1} />}
+          </div>
           <div className="card_form_layout">
             <div className="flex items-center">
               <img src={logoTitle} width={44} height={44} />
@@ -64,9 +117,10 @@ function Login() {
                     type="text"
                     placeholder="Enter email"
                     onValueChange={(value) => handleInputChange("login", value)}
+                    error={errors[0]}
                   />
                 </div>
-                <div className="flex flex-col mt-[1.5rem]">
+                <div className="flex flex-col mt-[1rem]">
                   <label htmlFor="passwordBorder" className="card_label_form">
                     Password
                   </label>
@@ -78,9 +132,10 @@ function Login() {
                     onValueChange={(value) =>
                       handleInputChange("password", value)
                     }
+                    error={errors[1]}
                   />
                 </div>
-                <div className="flex items-center mt-4 mb-7">
+                <div className="flex items-center mb-7">
                   <SwitchToggle
                     checked={isChecked}
                     onChange={handleToggleChange}
@@ -120,6 +175,13 @@ function Login() {
             </div>
           </div>
         </div>
+        {loginStatus ? (
+          loginStatus === "success" ? (
+            <Toast message={`${loginMessage}`} success={true} />
+          ) : (
+            <Toast message={`${loginMessage}`} success={false} />
+          )
+        ) : null}
       </div>
     </>
   );
