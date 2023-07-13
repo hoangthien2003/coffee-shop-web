@@ -31,7 +31,10 @@
     @apply ml-[10px] text-[13px];
   }
   .card_input_field {
-    @apply outline-none w-full bg-transparent;
+    @apply outline-none focus:outline-none focus:outline-0 
+    border-none focus:border-none w-full bg-transparent
+    focus:outline-offset-0 focus:ring-0 focus:ring-offset-0
+    p-0;
   }
   .card_input_border {
     @apply border-gray-200 rounded-[0.3rem]
@@ -48,5 +51,11 @@
   .card_footer_form {
     @apply flex items-center w-full justify-center
     text-[14px];
+  }
+  .toast {
+    @apply flex items-center w-full max-w-xs 
+    text-gray-500 bg-white rounded-lg shadow 
+    dark:text-gray-400 dark:bg-gray-800 absolute
+    transition-opacity bottom-4 right-4;
   }
 }
